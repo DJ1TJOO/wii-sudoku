@@ -85,12 +85,6 @@ static void HandleInput()
     if (WPAD_ButtonsDown(0) & WPAD_BUTTON_UP)
         button_active = (button_active + num_buttons - 1) % num_buttons;
 
-    // If [1] was pressed on the first Wiimote, handle the button press
-    if (WPAD_ButtonsDown(0) & WPAD_BUTTON_1)
-    {
-        changeState(&mainMenuState);
-    }
-
     // If [A] was pressed on the first Wiimote, handle the button press
     if (WPAD_ButtonsDown(0) & WPAD_BUTTON_A)
     {
