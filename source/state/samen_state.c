@@ -17,7 +17,6 @@ static Button quit_button;
 static GRRLIB_texImg *tex_quit_button;
 static GRRLIB_texImg *tex_quit_button_active;
 
-static GRRLIB_texImg *composed_tex_title;
 static u32 title_width;
 
 static short int button_active = -1;
@@ -40,14 +39,8 @@ static void Init()
     tex_quit_button = preRenderButton(quit_button, tex_button_png, SUDOKU_WHITE);
     tex_quit_button_active = preRenderButton(quit_button, tex_button_active_png, SUDOKU_BLUE);
 
-    // PRe render title
+    // title width
     title_width = textWidth(arial16, 30, "SUDOKU");
-    GRRLIB_texImg *composed_tex_title = GRRLIB_CreateEmptyTexture(title_width, 30);
-
-    GRRLIB_CompoStart();
-    // textTTF(arial16, 0, 0, SUDOKU_WHITE, 30, "SUDOKU");
-    GRRLIB_DrawPart(0, 0, 0, 0, 9, 9, tex_button_active_png, 0, 1, 1, GRRLIB_WHITE);
-    GRRLIB_CompoEnd(0, 0, composed_tex_title);
 
     // Play a random sound
     // setOneSound(1);
@@ -92,6 +85,12 @@ static void HandleInput()
     if (WPAD_ButtonsDown(0) & WPAD_BUTTON_UP)
         button_active = (button_active + num_buttons - 1) % num_buttons;
 
+    // If [1] was pressed on the first Wiimote, handle the button press
+    if (WPAD_ButtonsDown(0) & WPAD_BUTTON_1)
+    {
+        changeState(&mainMenuState);
+    }
+
     // If [A] was pressed on the first Wiimote, handle the button press
     if (WPAD_ButtonsDown(0) & WPAD_BUTTON_A)
     {
@@ -109,7 +108,7 @@ static void Render()
     GRRLIB_FillScreen(SUDOKU_BLACK);
 
     // Render main title
-    GRRLIB_DrawImg((rmode->fbWidth / 2) - (title_width / 2), 20, composed_tex_title, 0, 1, 1, GRRLIB_WHITE);
+    textTTF(arial16, (rmode->fbWidth / 2) - (title_width / 2), 10, SUDOKU_WHITE, 30, "SUDOKU");
 
     // Render quit button
     renderButton(quit_button, button_active == 0 ? tex_quit_button_active : tex_quit_button);

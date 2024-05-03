@@ -126,8 +126,6 @@ static void Render()
     u32 title_width = textWidth(arial16, 50, "SUDOKU");
     textTTF(arial16, (rmode->fbWidth / 2) - (title_width / 2), 70, SUDOKU_WHITE, 50, "SUDOKU");
 
-    textTTF(arial16, 10, 70, SUDOKU_WHITE, 10, textFormat("%a", &samenState));
-
     // Render the button
     renderButton(start_button, button_active == 0 ? tex_start_button_active : tex_start_button);
 

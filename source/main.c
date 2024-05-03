@@ -11,9 +11,10 @@
 #include <asndlib.h>
 #include <mp3player.h>
 
-#include "state/manager/state_manager.h"
-#include "state/main_menu.h"
+#include "state/states.h"
 #include "state/samen_state.h"
+#include "state/main_menu.h"
+#include "state/manager/state_manager.h"
 
 int main(int argc, char **argv)
 {

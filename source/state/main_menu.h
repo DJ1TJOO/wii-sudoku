@@ -14,9 +14,10 @@
 #include "manager/game_state.h"
 #include "manager/state_manager.h"
 
-#include "samen_state.h"
+#include "states.h"
+// #include "samen_state.h"
 
-extern GameState mainMenuState;
+// extern GameState mainMenuState;
 void initAndRegisterMainMenuState();
 
 #endif
