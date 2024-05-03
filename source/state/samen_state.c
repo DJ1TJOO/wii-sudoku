@@ -1,0 +1,133 @@
+#include "samen_state.h"
+
+#include "button_png.h"
+#include "button_active_png.h"
+#include "arial_rounded_ttf.h"
+
+GameState samenState;
+
+// Font
+static GRRLIB_ttfFont *arial16;
+
+// Buttons
+static GRRLIB_texImg *tex_button_png;
+static GRRLIB_texImg *tex_button_active_png;
+
+static Button quit_button;
+static GRRLIB_texImg *tex_quit_button;
+static GRRLIB_texImg *tex_quit_button_active;
+
+static GRRLIB_texImg *composed_tex_title;
+static u32 title_width;
+
+static short int button_active = -1;
+static int num_buttons = 1;
+
+static void Init()
+{
+    // Init arial font
+    arial16 = GRRLIB_LoadTTF(arial_rounded_ttf, arial_rounded_ttf_size);
+
+    // Init buttons
+    button_active = -1;
+
+    tex_button_png = GRRLIB_LoadTexture(button_png);
+    tex_button_active_png = GRRLIB_LoadTexture(button_active_png);
+
+    quit_button = createButton((rmode->fbWidth / 2) - (160 / 2), (rmode->efbHeight) - 40, 160, 40, arial16, 25, "sluiten");
+
+    // Pre-render buttons
+    tex_quit_button = preRenderButton(quit_button, tex_button_png, SUDOKU_WHITE);
+    tex_quit_button_active = preRenderButton(quit_button, tex_button_active_png, SUDOKU_BLUE);
+
+    // PRe render title
+    title_width = textWidth(arial16, 30, "SUDOKU");
+    GRRLIB_texImg *composed_tex_title = GRRLIB_CreateEmptyTexture(title_width, 30);
+
+    GRRLIB_CompoStart();
+    // textTTF(arial16, 0, 0, SUDOKU_WHITE, 30, "SUDOKU");
+    GRRLIB_DrawPart(0, 0, 0, 0, 9, 9, tex_button_active_png, 0, 1, 1, GRRLIB_WHITE);
+    GRRLIB_CompoEnd(0, 0, composed_tex_title);
+
+    // Play a random sound
+    // setOneSound(1);
+    // setLoopSound(1);
+    // playSound(0);
+}
+
+static void Deinit()
+{
+    // Stop the sound
+    // stopSound();
+    // setLoopSound(0);
+    // setOneSound(0);
+
+    // Free the arial font
+    GRRLIB_FreeTTF(arial16);
+
+    // Free the button textures
+    GRRLIB_FreeTexture(tex_quit_button);
+    GRRLIB_FreeTexture(tex_quit_button_active);
+
+    // Free the button textures
+    GRRLIB_FreeTexture(tex_button_png);
+    GRRLIB_FreeTexture(tex_button_active_png);
+}
+
+static void HandleInput()
+{
+    WPAD_ScanPads(); // Scan the Wiimotes
+
+    // If [HOME] was pressed on the first Wiimote, break out of the loop
+    if (WPAD_ButtonsDown(0) & WPAD_BUTTON_HOME)
+    {
+        quit();
+        return;
+    }
+
+    // If [DOWN] was pressed on the first Wiimote, toggle the button state
+    if (WPAD_ButtonsDown(0) & WPAD_BUTTON_DOWN)
+        button_active = (button_active + 1) % num_buttons;
+    // If [UP] was pressed on the first Wiimote, toggle the button state
+    if (WPAD_ButtonsDown(0) & WPAD_BUTTON_UP)
+        button_active = (button_active + num_buttons - 1) % num_buttons;
+
+    // If [A] was pressed on the first Wiimote, handle the button press
+    if (WPAD_ButtonsDown(0) & WPAD_BUTTON_A)
+    {
+        switch (button_active)
+        {
+        case 0: // To Main menu
+            changeState(&mainMenuState);
+            break;
+        }
+    }
+}
+
+static void Render()
+{
+    GRRLIB_FillScreen(SUDOKU_BLACK);
+
+    // Render main title
+    GRRLIB_DrawImg((rmode->fbWidth / 2) - (title_width / 2), 20, composed_tex_title, 0, 1, 1, GRRLIB_WHITE);
+
+    // Render quit button
+    renderButton(quit_button, button_active == 0 ? tex_quit_button_active : tex_quit_button);
+
+    // Render the frame buffer to the TV
+    GRRLIB_Render();
+}
+
+static void Loop()
+{
+    if (samenState.paused == 1)
+        return;
+
+    HandleInput();
+    Render();
+}
+
+void initAndRegisterSamenState()
+{
+    initGamestate(&samenState, Init, Loop, Deinit);
+}
