@@ -3,6 +3,7 @@
 #include "button_png.h"
 #include "button_active_png.h"
 #include "arial_rounded_ttf.h"
+#include "background_png.h"
 
 GameState mainMenuState;
 
@@ -39,8 +40,8 @@ static void Init()
     tex_button_png = GRRLIB_LoadTexture(button_png);
     tex_button_active_png = GRRLIB_LoadTexture(button_active_png);
 
-    start_button = createButton((rmode->fbWidth / 2) - (160 / 2), 155, 160, 40, arial16, 25, "samen");
-    battle_button = createButton((rmode->fbWidth / 2) - (160 / 2), 155 + 50, 160, 40, arial16, 25, "battle");
+    start_button = createButton((rmode->fbWidth / 2) - (160 / 2), 170, 160, 40, arial16, 25, "samen");
+    battle_button = createButton((rmode->fbWidth / 2) - (160 / 2), 170 + 50, 160, 40, arial16, 25, "battle");
     quit_button = createButton((rmode->fbWidth / 2) - (160 / 2), (rmode->efbHeight) - 100, 160, 40, arial16, 25, "sluiten");
 
     // Pre-render buttons
@@ -124,7 +125,7 @@ static void Render()
 
     // Render main title
     u32 title_width = textWidth(arial16, 50, "SUDOKU");
-    textTTF(arial16, (rmode->fbWidth / 2) - (title_width / 2), 70, SUDOKU_WHITE, 50, "SUDOKU");
+    textTTF(arial16, (rmode->fbWidth / 2) - (title_width / 2), 60, SUDOKU_WHITE, 50, "SUDOKU");
 
     // Render the button
     renderButton(start_button, button_active == 0 ? tex_start_button_active : tex_start_button);
