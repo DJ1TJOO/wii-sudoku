@@ -39,6 +39,8 @@ static int sudoku_active = 0;
 static int active_cell = 0;
 static int active_number = 1;
 
+static int rumbleTime = 0;
+
 static void Init()
 {
     // Init arial font
@@ -105,7 +107,12 @@ static void Deinit()
 
 static void HandleInput()
 {
+    rumbleTime++;
+
     WPAD_ScanPads(); // Scan the Wiimotes
+
+    if (rumbleTime > 20)
+        WPAD_Rumble(0, 0);
 
     // If [HOME] was pressed on the first Wiimote, break out of the loop
     if (WPAD_ButtonsDown(0) & WPAD_BUTTON_HOME)
@@ -167,6 +174,13 @@ static void HandleInput()
         switch (button_active)
         {
         case 0: // Inside sudoku
+            if (sudoku_state[active_cell] == 0 && sudoku[active_cell] != 0)
+            {
+                rumbleTime = 0;
+                WPAD_Rumble(0, 1);
+                break;
+            }
+
             sudoku[active_cell] = active_number;
             sudoku_state[active_cell] = 1;
             break;

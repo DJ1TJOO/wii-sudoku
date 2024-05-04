@@ -17,6 +17,15 @@ static short randomGenerator(int num)
     return (int)(rand() % num) + 1;
 }
 
+static short hasEmptyCell()
+{
+    for (int i = 0; i < N; i++)
+        for (int j = 0; j < N; j++)
+            if (mat[i][j] == 0)
+                return 1;
+    return 0;
+}
+
 static short unUsedInRow(int i, int num)
 {
     for (int j = 0; j < N; j++)
@@ -109,44 +118,87 @@ static short fillRemaining(int i, int j)
     return 0;
 }
 
-static void removeKDigits()
+static short solveSudoku(int *numberOfSolution)
 {
-    int count = K;
-    while (count != 0)
+    int row, col;
+
+    for (int cellId = 0; cellId < N * N; cellId++)
     {
-        int cellId = randomGenerator(N * N);
+        row = (cellId / N);
+        col = cellId % 9;
 
-        int i = (cellId / N);
-        int j = cellId % 9;
-        // if (j != 0)
-        //     j = j - 1;
-
-        if (mat[i][j] != 0)
+        if (mat[row][col] == 0)
         {
-            count--;
-            mat[i][j] = 0;
+            for (int num = 1; num <= N; num++)
+            {
+                if (CheckIfSafe(row, col, num))
+                {
+                    mat[row][col] = num;
+
+                    if (!hasEmptyCell())
+                    {
+                        (*numberOfSolution)++;
+                        break;
+                    }
+
+                    if (solveSudoku(numberOfSolution))
+                        return 1;
+                }
+            }
+
+            break;
         }
     }
+
+    mat[row][col] = 0;
+
+    return 0;
 }
 
 static void fillValues()
 {
+    srand(time(NULL));
+
     // Fill the diagonal of SRN x SRN matrices
     fillDiagonal();
 
     // Fill remaining blocks
     fillRemaining(0, SRN);
 
-    // Remove Randomly K digits to make game
-    removeKDigits();
+    // Remove digits
+    srand(time(NULL));
+
+    int attempt = DIFFICULTY;
+    while (attempt > 0)
+    {
+        int row = randomGenerator(N);
+        int col = randomGenerator(N);
+
+        while (mat[row][col] == 0)
+        {
+            row = randomGenerator(N);
+            col = randomGenerator(N);
+        }
+
+        int backupValue = mat[row][col];
+        mat[row][col] = 0;
+
+        int numberOfSolution = 0;
+        solveSudoku(&numberOfSolution);
+
+        if (numberOfSolution != 1)
+        {
+            mat[row][col] = backupValue;
+            attempt--;
+        }
+    }
 }
 
 int *generateSudoku()
 {
-    srand(time(NULL));
     fillValues();
 
-    int *sudoku = malloc(sizeof(int) * N * N);
+    int *sudoku = (int *)malloc(sizeof(int) * N * N);
     for (int i = 0; i < N; i++)
         for (int j = 0; j < N; j++)
             sudoku[i * N + j] = mat[i][j];
