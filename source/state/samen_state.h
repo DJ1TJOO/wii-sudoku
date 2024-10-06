@@ -11,6 +11,8 @@
 
 #include "../colors.h"
 
+#include "../sudoku_generator.h"
+
 #include "manager/game_state.h"
 #include "manager/state_manager.h"
 

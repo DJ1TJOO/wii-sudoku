@@ -70,7 +70,7 @@ static void Init()
     title_width = textWidth(arial16, 30, "SUDOKU");
 
     // Generate sudoku
-    int *generated_sudoku = generateSudoku();
+    int *generated_sudoku = (int *)generateSudoku();
     for (int i = 0; i < 81; i++)
     {
         sudoku[i] = generated_sudoku[i];
