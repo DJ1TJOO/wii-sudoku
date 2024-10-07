@@ -31,6 +31,8 @@ static int num_buttons = 3;
 
 static void Init()
 {
+    fprintf(stdout, "[SUDOKU]: MainMenuState -> Init \r");
+
     // Init arial font
     arial16 = GRRLIB_LoadTTF(arial_rounded_ttf, arial_rounded_ttf_size);
 
@@ -62,6 +64,7 @@ static void Init()
 
 static void Deinit()
 {
+    fprintf(stdout, "[SUDOKU]: MainMenuState -> Deinit \r");
     // Stop the sound
     stopSound();
     setLoopSound(0);

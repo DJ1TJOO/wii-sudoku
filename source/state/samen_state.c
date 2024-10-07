@@ -43,6 +43,8 @@ static int rumbleTime = 0;
 
 static void Init()
 {
+    fprintf(stdout, "[SUDOKU]: SameState -> Init \r");
+
     // Init arial font
     arial16 = GRRLIB_LoadTTF(arial_rounded_ttf, arial_rounded_ttf_size);
 
@@ -85,6 +87,7 @@ static void Init()
 
 static void Deinit()
 {
+    fprintf(stdout, "[SUDOKU]: SamenState -> Deinit \r");
     // Stop the sound
     // stopSound();
     // setLoopSound(0);
